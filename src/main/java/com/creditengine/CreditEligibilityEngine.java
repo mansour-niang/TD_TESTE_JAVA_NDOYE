@@ -1,15 +1,22 @@
 package com.creditengine;
 
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.Period;
+
 public class CreditEligibilityEngine {
 
     private static final int RESTE_A_VIVRE_MINIMUM = 100_000;
     private static final double TAUX_ENDETTEMENT_MAXIMUM_STANDARD = 33.0;
     private static final double TAUX_ENDETTEMENT_MAXIMUM_FONCTIONNAIRE = 40.0;
+    private static final int AGE_MAXIMUM_FIN_DE_PRET = 65;
 
     private final CentralBankPort centralBankPort;
+    private final Clock clock;
 
-    public CreditEligibilityEngine(CentralBankPort centralBankPort) {
+    public CreditEligibilityEngine(CentralBankPort centralBankPort, Clock clock) {
         this.centralBankPort = centralBankPort;
+        this.clock = clock;
     }
 
     public EligibilityDecision evaluate(LoanApplication application) {
@@ -22,6 +29,10 @@ public class CreditEligibilityEngine {
         }
 
         if (tauxEndettement(application) > plafondTauxEndettement(application)) {
+            return EligibilityDecision.REJETE;
+        }
+
+        if (ageALaFinDuPret(application) > AGE_MAXIMUM_FIN_DE_PRET) {
             return EligibilityDecision.REJETE;
         }
 
@@ -45,5 +56,10 @@ public class CreditEligibilityEngine {
         return application.isCivilServant()
                 ? TAUX_ENDETTEMENT_MAXIMUM_FONCTIONNAIRE
                 : TAUX_ENDETTEMENT_MAXIMUM_STANDARD;
+    }
+
+    private int ageALaFinDuPret(LoanApplication application) {
+        LocalDate finDuPret = LocalDate.now(clock).plusMonths(application.durationInMonths());
+        return Period.between(application.birthDate(), finDuPret).getYears();
     }
 }
