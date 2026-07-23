@@ -5,6 +5,7 @@ public record LoanApplication(
         int monthlyIncome,
         int monthlyExpenses,
         int requestedAmount,
-        int durationInMonths
+        int durationInMonths,
+        boolean isCivilServant
 ) {
 }
