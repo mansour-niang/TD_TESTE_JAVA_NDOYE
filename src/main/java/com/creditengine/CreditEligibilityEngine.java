@@ -6,7 +6,17 @@ public class CreditEligibilityEngine {
     private static final double TAUX_ENDETTEMENT_MAXIMUM_STANDARD = 33.0;
     private static final double TAUX_ENDETTEMENT_MAXIMUM_FONCTIONNAIRE = 40.0;
 
+    private final CentralBankPort centralBankPort;
+
+    public CreditEligibilityEngine(CentralBankPort centralBankPort) {
+        this.centralBankPort = centralBankPort;
+    }
+
     public EligibilityDecision evaluate(LoanApplication application) {
+        if (centralBankPort.isBanned(application.clientId())) {
+            return EligibilityDecision.REJETE;
+        }
+
         if (resteAVivre(application) < RESTE_A_VIVRE_MINIMUM) {
             return EligibilityDecision.REJETE;
         }

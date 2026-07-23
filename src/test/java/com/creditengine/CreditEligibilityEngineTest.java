@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CreditEligibilityEngineTest {
 
-    private final CreditEligibilityEngine engine = new CreditEligibilityEngine();
+    private final CreditEligibilityEngine engine = new CreditEligibilityEngine(clientId -> false);
 
     @Test
     void rejette_quand_le_reste_a_vivre_est_strictement_inferieur_a_100000() {
