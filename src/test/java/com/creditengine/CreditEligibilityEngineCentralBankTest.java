@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +21,7 @@ class CreditEligibilityEngineCentralBankTest {
         when(centralBankPort.isBanned("client-banni")).thenReturn(true);
         CreditEligibilityEngine engine = new CreditEligibilityEngine(centralBankPort);
 
-        LoanApplication application = new LoanApplication("client-banni", 500_000, 50_000, 12_000, 12, true);
+        LoanApplication application = new LoanApplication("client-banni", 500_000, 50_000, 12_000, 12, true, LocalDate.of(1990, 1, 1));
 
         EligibilityDecision decision = engine.evaluate(application);
 
