@@ -23,7 +23,7 @@ class CreditEligibilityEngineRetirementAgeTest {
 
     @Test
     void rejette_un_client_de_60_ans_empruntant_sur_72_mois_car_il_aurait_66_ans_a_la_fin_du_pret() {
-        CreditEligibilityEngine engine = new CreditEligibilityEngine(centralBankPort, fixedClock);
+        CreditEligibilityEngine engine = new CreditEligibilityEngine(centralBankPort, fixedClock, clientId -> {});
 
         LoanApplication application = new LoanApplication(
                 "client-senior", 500_000, 50_000, 60_000, 72, false, LocalDate.of(1970, 1, 1));

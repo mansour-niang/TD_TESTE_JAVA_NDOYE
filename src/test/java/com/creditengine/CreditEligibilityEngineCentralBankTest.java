@@ -23,7 +23,7 @@ class CreditEligibilityEngineCentralBankTest {
     void rejette_toujours_un_client_interdit_bancaire_meme_fonctionnaire_avec_excellent_taux() {
         when(centralBankPort.isBanned("client-banni")).thenReturn(true);
         Clock fixedClock = Clock.fixed(Instant.parse("2030-01-01T00:00:00Z"), ZoneOffset.UTC);
-        CreditEligibilityEngine engine = new CreditEligibilityEngine(centralBankPort, fixedClock);
+        CreditEligibilityEngine engine = new CreditEligibilityEngine(centralBankPort, fixedClock, clientId -> {});
 
         LoanApplication application = new LoanApplication("client-banni", 500_000, 50_000, 12_000, 12, true, LocalDate.of(1990, 1, 1));
 
