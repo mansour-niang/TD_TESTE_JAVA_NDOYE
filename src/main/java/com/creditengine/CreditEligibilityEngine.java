@@ -10,17 +10,23 @@ public class CreditEligibilityEngine {
     private static final double TAUX_ENDETTEMENT_MAXIMUM_STANDARD = 33.0;
     private static final double TAUX_ENDETTEMENT_MAXIMUM_FONCTIONNAIRE = 40.0;
     private static final int AGE_MAXIMUM_FIN_DE_PRET = 65;
+    private static final int MONTANT_SEUIL_FRAUDE = 10_000_000;
 
     private final CentralBankPort centralBankPort;
     private final Clock clock;
+    private final FraudAlertService fraudAlertService;
 
-    public CreditEligibilityEngine(CentralBankPort centralBankPort, Clock clock) {
+    public CreditEligibilityEngine(CentralBankPort centralBankPort, Clock clock, FraudAlertService fraudAlertService) {
         this.centralBankPort = centralBankPort;
         this.clock = clock;
+        this.fraudAlertService = fraudAlertService;
     }
 
     public EligibilityDecision evaluate(LoanApplication application) {
         if (centralBankPort.isBanned(application.clientId())) {
+            if (application.requestedAmount() > MONTANT_SEUIL_FRAUDE) {
+                fraudAlertService.flagSuspiciousClient(application.clientId());
+            }
             return EligibilityDecision.REJETE;
         }
 
